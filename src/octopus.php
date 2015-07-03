@@ -3,7 +3,7 @@ namespace Radiergummi\Octopus;
 
 use \RecursiveDirectoryIterator;
 use \RecursiveIteratorIterator;
-class Octopus
+class Search
 {
 	/**
 	 * query
@@ -142,6 +142,20 @@ class Octopus
 	 */
 	public static function set($key, $value) {
 		static::$$key = $value;
+	}
+	
+	/**
+	 * configure function.
+	 * method for setting multiple default options
+	 * 
+	 * @access public
+	 * @param array $options
+	 * @return void
+	 */
+	public function configure($options) {
+		foreach ($options as $key => $value) {
+			$this->set($key, $value);
+		}
 	}
 
 	/**
