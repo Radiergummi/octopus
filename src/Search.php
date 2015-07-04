@@ -130,7 +130,7 @@ class Search
 		if (empty(static::$resultsPerFile)) static::$resultsPerFile = $resultsPerFile;
 
 		// the list of files to search in
-		if (empty(static::$filesToSearch)) static::$filesToSearch = static::getFiles();
+		if (empty(static::$filesToSearch)) static::$filesToSearch = static::getFiles(static::$path);
 		
 		// the callback for
 		if (empty($buildUrl)) {
