@@ -199,7 +199,7 @@ class Search
 			// search the file content for the term. To avoid returning html
 			// tags, everything except line breaks, code and paragraphs gets 
 			// stripped out before the content is parsed.
-			if (stristr($content = strip_tags(nl2br(file_get_contents($file)), '<br><code><p>'), static::$query) !== false) {
+			if (stristr($content = strip_tags(nl2br(file_get_contents($file)), '<br><code><p>'), $this->query) !== false) {
 
 				// call the callback for URL generation
 				$result['url'] = call_user_func(static::buildUrl, $file);
