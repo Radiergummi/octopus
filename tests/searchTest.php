@@ -30,7 +30,7 @@ class SearchTest extends PHPUnit_Framework_TestCase
     $mockContentPath = dirname(__FILE__) . '/fixtures/content';
     $mockExcludes = array('header.php', 'footer.php', 'search.php');
     
-    $obj->configure(array('path' => $mockContentPath, excludes => $mockExcludes));
+    $obj->configure(array('path' => $mockContentPath, 'excludes' => $mockExcludes));
     
     $this->assertEquals($mockContentPath, Radiergummi\Octopus\Search::$path);
     $this->assertEquals($mockExcludes, Radiergummi\Octopus\Search::$excludes);
