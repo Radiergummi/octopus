@@ -1,4 +1,4 @@
-# octopus
+# octopus [![Build Status](https://travis-ci.org/Radiergummi/octopus.svg?branch=master)](https://travis-ci.org/Radiergummi/octopus)
 A super simple flat file search object in PHP.  
 
 Octopus allows searching a flat file structure, for example in a database-less CMS or a small static page.
