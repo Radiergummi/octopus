@@ -67,6 +67,8 @@ That provides you with, for example, the files name, its absolute path, its exte
 Now there is much room for improvement - say, adding the fragment identifier of the nearest heading (foo.org/page#fragment) would be nice. Or maybe flat file structure drivers, or result sorting, ... .
 
 ## A basic real-world results function
+The following is an example of how to actually use Octopus on a search site in your project. In case you wondering why this method is not part of Octopus itself: At some point, you'll have to use html tags to present your search results.  
+Generating this HTML code inside of the class would mix content generation and presentation badly.
 
 ```php
 /**
