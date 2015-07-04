@@ -91,11 +91,11 @@ class Search
 	 * @example $results = new Search('foo')->set('path', '/content/sites')->find();
 	 * 
 	 * @access public
-	 * @param string $path (default: '')								the path to search
-	 * @param mixed $excludes (default: [])							the files to exclude from searching
-	 * @param int $surroundingTextLength (default: 0)		the amount of words of surrounding text in snippets
-	 * @param int $resultsPerFile (default: 0)					the amount of result snippets to build for each file
-	 * @param Callable $buildUrl (default: null)				the callback for building URLs to results
+	 * @param string $path (default: '')			the path to search
+	 * @param mixed $excludes (default: [])			the files to exclude from searching
+	 * @param int $surroundingTextLength (default: 0)	the amount of words of surrounding text in snippets
+	 * @param int $resultsPerFile (default: 0)		the amount of result snippets to build for each file
+	 * @param Callable $buildUrl (default: null)		the callback for building URLs to results
 	 */
 	public function __construct(
 		$query,
