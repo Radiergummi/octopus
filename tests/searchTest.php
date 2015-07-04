@@ -16,8 +16,10 @@ class SearchTest extends PHPUnit_Framework_TestCase
   {
     $obj = new Radiergummi\Octopus\Search('foo');
     
-    $obj->set('path', dirname(__FILE__) . '/fixtures/content');
+    $mockContentPath = dirname(__FILE__) . '/fixtures/content';
     
-    $this->assertInstanceOf('Radiergummi\Octopus\Search', $obj);
+    $obj->set('path', $mockContentPath);
+    
+    $this->assertEquals(dirname(__FILE__) . '/fixtures/content', Radiergummi\Octopus\Search::$path);
   }
 }
