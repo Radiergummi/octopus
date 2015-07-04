@@ -68,7 +68,22 @@ Now there is much room for improvement - say, adding the fragment identifier of 
 
 ## A basic real-world results function
 The following is an example of how to actually use Octopus on a search site in your project. In case you wondering why this method is not part of Octopus itself: At some point, you'll have to use html tags to present your search results.  
-Generating this HTML code inside of the class would mix content generation and presentation badly.
+Generating this HTML code inside of the class would mix content generation and presentation badly.  
+Octopus already returns pretty usable data that could look like this:
+
+```php
+array {
+  [0] => array {
+    ["title"] => "Example Page",
+    ["url"] => "/example/page",
+    ["snippets"] => array {
+      [0] => "[...] ipsum dolor sit <span class='term'>amet</span> consectetur adipiscing elit [...]",
+      [1] => "[...] morewordsevenlongones foo bar <span class='term'>amet</span> baz bar foo [...]"
+    }
+  }
+}
+```
+So below you'll find an implementation to render that data in an actually useful list.
 
 ```php
 /**
