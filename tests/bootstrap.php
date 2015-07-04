@@ -5,4 +5,4 @@
  * 
  */
 
-require '../src/Octopus/Search.php';
+require '../src/octopus/Search.php';
