@@ -96,8 +96,10 @@ function getResults($searchTerm)
       $html .= '<strong>' . $resultProperties['title'] . '</strong>';
 
       // if we have a search snippet for the result, print it
-      if (! empty($resultProperties['snippet'])) {
-        $html .= '<p>' . $resultProperties['snippet'] . '</p>';
+      if (! empty($resultProperties['snippets'])) {
+        foreach ($resultProperties['snippets] as $snippet) {
+          $html .= '<p>' . $snippet . '</p>';
+        }
       }
     
     // close the anchor element
