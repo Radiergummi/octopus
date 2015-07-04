@@ -62,5 +62,6 @@ class SearchTest extends PHPUnit_Framework_TestCase
     $results = $obj->find();
 
     $this->assertInternalType ('array', $results);
+  }
 }
 
