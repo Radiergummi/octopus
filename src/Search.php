@@ -28,12 +28,24 @@ class Search
 	public $results = array();
 
 	/**
-	 * filesToSearch
-	 * holds all files to search in
+	 * path
+	 * holds the base search path
 	 * 
 	 * (default value: '')
 	 * 
 	 * @var string
+	 * @access public
+	 * @static
+	 */
+	public static $path = '';
+
+	/**
+	 * filesToSearch
+	 * holds all files to search in
+	 * 
+	 * (default value: array())
+	 * 
+	 * @var array
 	 * @access public
 	 * @static
 	 */
