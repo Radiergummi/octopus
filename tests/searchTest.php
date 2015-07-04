@@ -11,4 +11,11 @@ class SearchTest extends PHPUnit_Framework_TestCase
     
     $this->assertInstanceOf('Radiergummi\Octopus\Search', $obj);
   }
+  
+  public function testCreateObjectWithoutParameter()
+  {
+    $this->setExpectedException('\InvalidArgumentException');
+
+    $obj = new Radiergummi\Octopus\Search();
+  }
 }
