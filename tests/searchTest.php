@@ -5,17 +5,19 @@
  */
 class SearchTest extends PHPUnit_Framework_TestCase
 {
-  public function testCreateObjectWithParameter()
+  public function testCreateObject()
   {
     $obj = new Radiergummi\Octopus\Search('foo');
     
     $this->assertInstanceOf('Radiergummi\Octopus\Search', $obj);
   }
   
-  public function testCreateObjectWithoutParameter()
+  public function testSetConfigVar()
   {
-    $this->setExpectedException('\InvalidArgumentException');
-
-    $obj = new Radiergummi\Octopus\Search();
+    $obj = new Radiergummi\Octopus\Search('foo');
+    
+    $obj->set('path', dirname(__FILE__) . '/fixtures/content');
+    
+    $this->assertInstanceOf('Radiergummi\Octopus\Search', $obj);
   }
 }
