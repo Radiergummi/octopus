@@ -33,7 +33,19 @@ $search->configure([
 ]);
 ```
 
+Another possible way'd be to create a new Search object, specifying the settings as arguments:  
+
+```php
+$search new Search(
+  '/path/to/search',
+  '5'
+);
+```
+
 Of course, you can always edit the default values in the `__construct()` method as they most likely stay the same for your entire project.
+
+
+## Configuration
 
 Available configuration settings are:
 
@@ -45,5 +57,11 @@ Available configuration settings are:
 | `resultsPerFile`        | int      | The amount of results to gather from each file        | `0` (∞)                        |
 | `buildUrl`              | Callable | A callback for building URLs to the file with results | null (default callback)        |
 
-The last parameter is a bit less self-explainatory than the rest. Usually when searching, you want to provide a link to the page the result was found in. Using a database-powered CMS, that is a pretty standard task. If you are interested in using this library, though, you probably have your own, custom CMS and handle routing your way. That's fine! You can specify a callback for generating URLs, given the respective file as an `SPLFileInfo` object. The default callback will assume your files symbolize pages, and the `path` is the root directory of your public facing web server. So it builds URLs like so:  
+
+## URL generating callback functions
+
+The last parameter is a bit less self-explainatory than the rest. Usually when searching, you want to provide a link to the page the result was found in. Using a database-powered CMS, that is a pretty standard task. If you are interested in using this library, though, you probably have your own, custom CMS and handle routing your way. That's fine! You can specify a callback for generating URLs, given the respective file as an `SPLFileInfo` object.  
+That provides you with, for example, the files name, its absolute path, its extension, etc. The default callback coming with *Octopus* will assume your files symbolize pages, and `path` is the root directory of your public web server. So it builds URLs like this:  
 `/public/subfolder1/page1.php` becomes `http://hostname.tld/subfolder1/page1`.
+
+Now there is much room for improvement - say, adding the fragment identifier of the nearest heading (foo.org/page#fragment) would be nice. Or maybe flat file structure drivers, or result sorting, ... .
