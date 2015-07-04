@@ -86,17 +86,16 @@ class Search
 
 	/**
 	 * __construct function.
-	 * setup settings for the search. You should load these from your configuration here,
-	 * for example using my project Libconfig @ github.com/Radiergummi/libconfig :)
-	 *459 087 893 hnq564
+	 * Constructs a new search object
+	 *
 	 * @example $results = new Search('foo')->set('path', '/content/sites')->find();
 	 * 
 	 * @access public
-	 * @param string $path (default: '')
-	 * @param mixed $excludes (default: [])
-	 * @param int $surroundingTextLength (default: 0)
-	 * @param int $resultsPerFile (default: 0)
-	 * @return $this
+	 * @param string $path (default: '')								the path to search
+	 * @param mixed $excludes (default: [])							the files to exclude from searching
+	 * @param int $surroundingTextLength (default: 0)		the amount of words of surrounding text in snippets
+	 * @param int $resultsPerFile (default: 0)					the amount of result snippets to build for each file
+	 * @param Callable $buildUrl (default: null)				the callback for building URLs to results
 	 */
 	public function __construct(
 		$query,
@@ -121,14 +120,21 @@ class Search
 		// the list of files to search in
 		if (empty(static::$filesToSearch)) static::$filesToSearch = static::getFiles();
 		
-		if (empty($buildUrl)) static::$buildUrl = function($file) {
-			// add filepath relative to base search directory
-			$relativePath = substr($file->getPath() . DIRECTORY_SEPARATOR . $file->getFileName(), strlen(static::$searchpath));
-
-			return '/' . substr($relativePath, 0, -strlen($file->getExtension()));
-		};
+		// the callback for
+		if (empty($buildUrl)) {
+			static::$buildUrl = function($file) {
+				// add filepath relative to base search directory
+				$relativePath = substr($file->getPath() . DIRECTORY_SEPARATOR . $file->getFileName(), strlen(static::$searchpath));
+	
+				// return the URI for the file path without the file extension
+				// for example: (file) "/public/foo/bar/page-name.php" (uri) "/foo/bar/page-name"
+				return '/' . substr($relativePath, 0, -strlen($file->getExtension()));
+			};
+		}
 		
-		return $this;
+		else {
+			static::$buildUrl = $buildUrl;
+		}
 	}
 	
 	/**
@@ -142,6 +148,9 @@ class Search
 	 */
 	public static function set($key, $value) {
 		static::$$key = $value;
+
+		// return the current search object for chaining
+		return $this;
 	}
 	
 	/**
@@ -156,6 +165,9 @@ class Search
 		foreach ($options as $key => $value) {
 			$this->set($key, $value);
 		}
+		
+		// return the current search object for chaining
+		return $this;
 	}
 
 	/**
@@ -163,37 +175,66 @@ class Search
 	 * attempts to find a string in a directory and returns an array of results.
 	 * 
 	 * @access public
-	 * @param mixed $query
-	 * @return array
+	 * @return array		the search results
 	 */
 	public function find()
 	{
 		foreach(static::$filesToSearch as $file) {
 
-			// skip excluded file
+			// if a file is defined as to be excluded, skip this loop iteration
 			if (in_array($file->getFileName(), static::$excludes)) continue;
-
 			
-			// search file for term
+			// search the file content for the term. To avoid returning html
+			// tags, everything except line breaks, code and paragraphs gets 
+			// stripped out before the content is parsed.
 			if (stristr($content = strip_tags(nl2br(file_get_contents($file)), '<br><code><p>'), static::$query) !== false) {
 
 				// call the callback for URL generation
-				//$result['url'] = '/' . substr(end(static::$files), 0, -strlen(EXT));
-				$result['url'] = call_user_func(static::buildUrl, $relativePath);
+				$result['url'] = call_user_func(static::buildUrl, $file);
 				
-				// build name for resource
-				$result['title'] = ucwords(str_replace('-', ' ', end(@explode('/', Config::get('app.uri')))));
+				// build name for resource by trimming of the file extension,
+				// replacing dashes with whitespace and uppercasing words.
+				// NOTE: This should be done within a callback, too.
+				$result['title'] = ucwords(str_replace('-', ' ', substr($file->getFilename(), 0, -strlen($file->getExtension))));
 			
 				// generate snippet with search term
-				if (preg_match_all('/((\s\S*){0,' . static::$surroundingTextLength . '})(' . $this->query . ')((\s?\S*){0,' . static::$surroundingTextLength . '})/im', $content, $matches, PREG_SET_ORDER)) {
+				if (preg_match_all(
+					// this regex captures the words around the search term, if present.
+					'/((\s\S*){0,' . static::$surroundingTextLength . '})(' . $this->query . ')((\s?\S*){0,' . static::$surroundingTextLength . '})/im',
+					
+					// the prepared file content string
+					$content,
+					
+					// the return variable name
+					$matches,
+					
+					// return matches in associative array
+					PREG_SET_ORDER
+				)) {
 					// limit results per file
 					$resultLimit = (static::$resultsPerFile === 0 ? count($matches) : static::$resultsPerFile);
 
+					// iterate over result snippets
 					for ($i = 0; $i < $resultLimit; $i++) {
-						if (!empty($matches[$i][3])) {
-							$result['hits'][] = vsprintf('[...] %s<span class="term">%s</span>%s [...]', [$matches[$i][1], $matches[$i][3], $matches[$i][4]]);
-						} else {
-							$result['hits'][] = 'keine Treffer';
+						
+						// if we have a match for the term in the file text
+						if (! empty($matches[$i][3])) {
+							
+							// add a new snippet to the result
+							$result['snippet'][] = vsprintf(
+								
+								// the snippet string
+								'[...] %s<span class="term">%s</span>%s [...]',
+								
+								// the text before the term
+								[$matches[$i][1],
+								
+								// the term itself as matched in the text
+								$matches[$i][3],
+								
+								// the text after the term
+								$matches[$i][4]]
+							);
 						}
 					}
 				}
@@ -203,6 +244,7 @@ class Search
 			}
 		}
 
+		// return all results
 		return $this->results;
 	}
 	
@@ -228,12 +270,14 @@ class Search
 				RecursiveDirectoryIterator::SKIP_DOTS
 			);
 			
-			// add each found file to the array of files in which to search for the query.
+			// add each found file to the array of files in which to search for the query,
+			// if the file is actually readable
 			foreach (new RecursiveIteratorIterator($directoryIterator) as $file) {
-				$files[] = $file;
+				if (is_readable($file)) $files[] = $file;
 			}
 		}
 		
+		// return all found files
 		return $files;
 	}
 }
