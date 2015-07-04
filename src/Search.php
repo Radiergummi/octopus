@@ -128,9 +128,6 @@ class Search
 		
 		// the amount of results per file to be regarded
 		if (empty(static::$resultsPerFile)) static::$resultsPerFile = $resultsPerFile;
-
-		// the list of files to search in
-		if (empty(static::$filesToSearch)) static::$filesToSearch = static::getFiles(static::$path);
 		
 		// the callback for
 		if (empty($buildUrl)) {
@@ -191,6 +188,10 @@ class Search
 	 */
 	public function find()
 	{
+		// the list of files to search in
+		if (empty(static::$filesToSearch)) static::$filesToSearch = static::getFiles(static::$path);
+
+		// iterate over all files
 		foreach(static::$filesToSearch as $file) {
 
 			// if a file is defined as to be excluded, skip this loop iteration
