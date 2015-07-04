@@ -50,5 +50,17 @@ class SearchTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($mockContentPath, Radiergummi\Octopus\Search::$path);
     $this->assertEquals($mockExcludes, Radiergummi\Octopus\Search::$excludes);
   }
+
+  public function testSearchConcluded()
+  {
+    $mockContentPath = dirname(__FILE__) . '/fixtures/content';
+    $obj = new Radiergummi\Octopus\Search(
+      'foo',
+      $mockContentPath
+    );
+    
+    $results = $obj->find();
+
+    $this->assertInternalType ('array', $results);
 }
 
