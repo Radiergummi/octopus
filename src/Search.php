@@ -151,11 +151,10 @@ class Search
 	 * method for setting default options for searches
 	 * 
 	 * @access public
-	 * @static
 	 * @param string $key  the option name
 	 * @param mixed $value  the options value
 	 */
-	public static function set($key, $value) {
+	public function set($key, $value) {
 		static::$$key = $value;
 
 		// return the current search object for chaining
