@@ -5,4 +5,4 @@
  * 
  */
 
-require dirname(__FILE__) . '/../src/octopus/Search.php';
+require dirname(__FILE__) . '/../src/Search.php';
