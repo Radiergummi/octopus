@@ -65,3 +65,46 @@ That provides you with, for example, the files name, its absolute path, its exte
 `/public/subfolder1/page1.php` becomes `http://hostname.tld/subfolder1/page1`.
 
 Now there is much room for improvement - say, adding the fragment identifier of the nearest heading (foo.org/page#fragment) would be nice. Or maybe flat file structure drivers, or result sorting, ... .
+
+## A basic real-world results function
+
+```php
+/**
+ * get search results for a search term
+ * 
+ * @param string $searchTerm    the term to search for
+ * @return string               the result list
+ */
+function getResults($searchTerm)
+{
+  // create the results set
+  $results = (new Search($searchTerm))->find();
+  
+  // if the result list is empty, show a "no results" message
+  if (empty($results)) return 'No results for' . $searchTerm;
+  
+  // collect the result list text
+  $html = '';
+  
+  // iterate over results
+  foreach ($results as $result => $resultProperties) {
+    
+    // wrap it in a block level anchor element
+    $html .= '<a href="' . $resultProperties['url'] . '">';
+    
+      // add the page title
+      $html .= '<strong>' . $resultProperties['title'] . '</strong>';
+
+      // if we have a search snippet for the result, print it
+      if (! empty($resultProperties['snippet'])) {
+        $html .= '<p>' . $resultProperties['snippet'] . '</p>';
+      }
+    
+    // close the anchor element
+    $html .= '</a>';
+  }
+  
+  // return the result list
+  return $html;
+}
+```
