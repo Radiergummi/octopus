@@ -239,14 +239,16 @@ class Search
 								// the snippet string
 								'[...] %s<span class="term">%s</span>%s [...]',
 								
-								// the text before the term
-								[$matches[$i][1],
-								
-								// the term itself as matched in the text
-								$matches[$i][3],
-								
-								// the text after the term
-								$matches[$i][4]]
+								array(
+									// the text before the term
+									$matches[$i][1],
+
+									// the term itself as matched in the text
+									$matches[$i][3],
+
+									// the text after the term
+									$matches[$i][4]
+								)
 							);
 						}
 					}
