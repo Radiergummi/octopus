@@ -130,3 +130,8 @@ function getResults($searchTerm)
   return $html;
 }
 ```
+
+## Why the name?
+Octopi have many arms to grab things. Which is what this library does.  
+...  
+Okay, bad analogy. But I love these little strange creatures :)
