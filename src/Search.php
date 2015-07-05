@@ -103,17 +103,17 @@ class Search
 	 * @example $results = new Search('foo')->set('path', '/content/sites')->find();
 	 * 
 	 * @access public
-	 * @param string $path (default: '')			the path to search
+	 * @param string $path (default: '/')			the path to search
 	 * @param mixed $excludes (default: [])			the files to exclude from searching
-	 * @param int $surroundingTextLength (default: 0)	the amount of words of surrounding text in snippets
+	 * @param int $surroundingTextLength (default: 5)	the amount of words of surrounding text in snippets
 	 * @param int $resultsPerFile (default: 0)		the amount of result snippets to build for each file
 	 * @param Callable $buildUrl (default: null)		the callback for building URLs to results
 	 */
 	public function __construct(
 		$query,
-		$path = '/path/to/search',
+		$path = '/',
 		$excludes = array('file1.php', 'file2.php'),
-		$surroundingTextLength = 0,
+		$surroundingTextLength = 5,
 		$resultsPerFile = 0,
 		$buildUrl = null
 	) {
@@ -136,11 +136,11 @@ class Search
 		if (empty($buildUrl)) {
 			static::$buildUrl = function($file) {
 				// add filepath relative to base search directory
-				$relativePath = substr($file->getPath() . DIRECTORY_SEPARATOR . $file->getFileName(), strlen(static::$searchpath));
+				$relativePath = substr($file->getPath() . DIRECTORY_SEPARATOR . $file->getFileName(), strlen(static::$path));
 	
 				// return the URI for the file path without the file extension
 				// for example: (file) "/public/foo/bar/page-name.php" (uri) "/foo/bar/page-name"
-				return '/' . substr($relativePath, 0, -strlen($file->getExtension()));
+				return substr($relativePath, 0, -strlen('.' . $file->getExtension()));
 			};
 		}
 		
@@ -205,12 +205,12 @@ class Search
 			if (stristr($content = strip_tags(nl2br(file_get_contents($file)), '<br><code><p>'), $this->query) !== false) {
 
 				// call the callback for URL generation
-				$result['url'] = call_user_func(static::buildUrl, $file);
+				$result['url'] = call_user_func(static::$buildUrl, $file);
 				
 				// build name for resource by trimming of the file extension,
 				// replacing dashes with whitespace and uppercasing words.
 				// NOTE: This should be done within a callback, too.
-				$result['title'] = ucwords(str_replace('-', ' ', substr($file->getFilename(), 0, -strlen($file->getExtension))));
+				$result['title'] = ucwords(str_replace('-', ' ', substr($file->getFilename(), 0, -strlen('.' . $file->getExtension()))));
 			
 				// generate snippet with search term
 				if (preg_match_all(
