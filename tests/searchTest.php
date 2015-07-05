@@ -66,7 +66,7 @@ class SearchTest extends PHPUnit_Framework_TestCase
         'title' => 'File2',
         'snippet' => 
         array (
-          0 => '[...]     Für Designer, Schriftsetzer, Layouter, Grafikenthusiasten und [...]',
+          0 => '[...]     Für <span class="term">Designer</span>, Schriftsetzer, Layouter, Grafikenthusiasten und [...]',
         ),
       ),
     );
