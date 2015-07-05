@@ -4,6 +4,9 @@ A super simple flat file search object in PHP.
 Octopus allows searching a flat file structure, for example in a database-less CMS or a small static page.
 
 
+## Installation
+Octopus is a Composer-ready package without external dependencies. It works with PHP down to 5.3 and is unit-tested (see Travis!).  
+To install it manually, include `Search.php` in your project.
 
 ## Usage
 To start a new search, create a new `Search` object:
