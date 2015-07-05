@@ -117,7 +117,10 @@ class Search
 		$resultsPerFile = 0,
 		$buildUrl = null
 	) {
-		// the path to search in.
+		// the query for this search
+		$this->query = $query;
+		
+		// the path to search in
 		if (empty(static::$path)) static::$path = $path;
 		
 		// files to explictly exclude from searching
