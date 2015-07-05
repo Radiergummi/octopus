@@ -54,7 +54,7 @@ Available configuration settings are:
 
 | Name                    | Type     | Description                                           | Default value                  |
 |:------------------------|:---------|:------------------------------------------------------|:-------------------------------|
-| `path`                  | string   | The path in which the files to search in are located  | `/path/to/search`              |
+| `path`                  | string   | The path in which the files to search in are located  | `/`              |
 | `excludes`              | array    | Files to explicitly exclude from searching            | `['header.php', 'footer.php']` |
 | `surroundingTextLength` | int      | The amount of words surrounding the term for snippets | `5`                            |
 | `resultsPerFile`        | int      | The amount of results to gather from each file        | `0` (∞)                        |
