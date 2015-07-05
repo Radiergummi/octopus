@@ -59,9 +59,21 @@ class SearchTest extends PHPUnit_Framework_TestCase
       $mockContentPath
     );
     
-    $results = $obj->find();
+    $expectedResults = array (
+      0 => 
+      array (
+        'url' => '/file2',
+        'title' => 'File2',
+        'snippet' => 
+        array (
+          0 => '[...]     Für Designer, Schriftsetzer, Layouter, Grafikenthusiasten und [...]',
+        ),
+      ),
+    )
 
-    $this->assertInternalType('array', $results);
+    $actualResults = $obj->find();
+
+    $this->assertEquals($expectedResults, $actualResults);
   }
 }
 
