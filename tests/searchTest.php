@@ -55,7 +55,7 @@ class SearchTest extends PHPUnit_Framework_TestCase
   {
     $mockContentPath = dirname(__FILE__) . '/fixtures/content';
     $obj = new Radiergummi\Octopus\Search(
-      'foo',
+      'Designer',
       $mockContentPath
     );
     
@@ -69,7 +69,7 @@ class SearchTest extends PHPUnit_Framework_TestCase
           0 => '[...]     Für Designer, Schriftsetzer, Layouter, Grafikenthusiasten und [...]',
         ),
       ),
-    )
+    );
 
     $actualResults = $obj->find();
 
