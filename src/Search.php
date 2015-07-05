@@ -112,7 +112,7 @@ class Search
 	public function __construct(
 		$query,
 		$path = '/',
-		$excludes = array('file1.php', 'file2.php'),
+		$excludes = array('header.php', 'footer.php'),
 		$surroundingTextLength = 5,
 		$resultsPerFile = 0,
 		$buildUrl = null
