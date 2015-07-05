@@ -135,8 +135,10 @@ class Search
 		// the callback for
 		if (empty($buildUrl)) {
 			static::$buildUrl = function($file) {
+				$path = Search::$path;
+				
 				// add filepath relative to base search directory
-				$relativePath = substr($file->getPath() . DIRECTORY_SEPARATOR . $file->getFileName(), strlen(static::$path));
+				$relativePath = substr($file->getPath() . DIRECTORY_SEPARATOR . $file->getFileName(), strlen($path));
 	
 				// return the URI for the file path without the file extension
 				// for example: (file) "/public/foo/bar/page-name.php" (uri) "/foo/bar/page-name"
