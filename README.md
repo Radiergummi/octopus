@@ -117,7 +117,7 @@ function getResults($searchTerm)
 
       // if we have a search snippet for the result, print it
       if (! empty($resultProperties['snippets'])) {
-        foreach ($resultProperties['snippets] as $snippet) {
+        foreach ($resultProperties['snippets'] as $snippet) {
           $html .= '<p>' . $snippet . '</p>';
         }
       }
