@@ -39,7 +39,7 @@ $search->configure([
 Another possible way'd be to create a new Search object, specifying the settings as arguments:  
 
 ```php
-$search new Search(
+$search = new Search(
   '/path/to/search',
   '5'
 );
@@ -54,7 +54,7 @@ Available configuration settings are:
 
 | Name                    | Type     | Description                                           | Default value                  |
 |:------------------------|:---------|:------------------------------------------------------|:-------------------------------|
-| `path`                  | string   | The path in which the files to search in are located  | `/`              |
+| `path`                  | string   | The path in which the files to search in are located  | `/`                            |
 | `excludes`              | array    | Files to explicitly exclude from searching            | `['header.php', 'footer.php']` |
 | `surroundingTextLength` | int      | The amount of words surrounding the term for snippets | `5`                            |
 | `resultsPerFile`        | int      | The amount of results to gather from each file        | `0` (∞)                        |
@@ -63,16 +63,16 @@ Available configuration settings are:
 
 ## URL generating callback functions
 
-The last parameter is a bit less self-explainatory than the rest. Usually when searching, you want to provide a link to the page the result was found in. Using a database-powered CMS, that is a pretty standard task. If you are interested in using this library, though, you probably have your own, custom CMS and handle routing your way. That's fine! You can specify a callback for generating URLs, given the respective file as an `SPLFileInfo` object.  
+The last parameter is a bit less self-explainatory than the rest. Usually when searching, you'll want to provide a link to the page the result was found in. Using a database-powered CMS, that is a pretty standard task. If you are interested in using this library, though, you probably have your own, custom CMS and handle routing your way. That's fine! You can specify a callback for generating URLs, given the respective file as an `SPLFileInfo` object.  
 That provides you with, for example, the files name, its absolute path, its extension, etc. The default callback coming with *Octopus* will assume your files symbolize pages, and `path` is the root directory of your public web server. So it builds URLs like this:  
 `/public/subfolder1/page1.php` becomes `http://hostname.tld/subfolder1/page1`.
 
-Now there is much room for improvement - say, adding the fragment identifier of the nearest heading (foo.org/page#fragment) would be nice. Or maybe flat file structure drivers, or result sorting, ... .
+Now there is much room for improvement - say, adding the fragment identifier of the nearest heading (foo.org/page#fragment) would be nice. Or maybe flat file structure drivers, or result sorting, ... . Open a new issue if you'd like some of these implemented.
 
 ## A basic real-world results function
-The following is an example of how to actually use Octopus on a search site in your project. In case you wondering why this method is not part of Octopus itself: At some point, you'll have to use html tags to present your search results.  
+The following is an example of how to actually use Octopus on a search site in your project. In case you're wondering why this method is not part of *Octopus* itself: At some point, you'll have to use html tags to present your search results.  
 Generating this HTML code inside of the class would mix content generation and presentation badly.  
-Octopus already returns pretty usable data that could look like this:
+*Octopus* already returns pretty usable data that could look like this:
 
 ```php
 array {
@@ -101,7 +101,7 @@ function getResults($searchTerm)
   $results = (new Search($searchTerm))->find();
   
   // if the result list is empty, show a "no results" message
-  if (empty($results)) return 'No results for' . $searchTerm;
+  if (empty($results)) return 'No results for ' . $searchTerm;
   
   // collect the result list text
   $html = '';
