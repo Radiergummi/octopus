@@ -58,16 +58,27 @@ Available configuration settings are:
 | `excludes`              | array    | Files to explicitly exclude from searching            | `['header.php', 'footer.php']` |
 | `surroundingTextLength` | int      | The amount of words surrounding the term for snippets | `5`                            |
 | `resultsPerFile`        | int      | The amount of results to gather from each file        | `0` (∞)                        |
+| `buildTitle`            | Callable | A callback for building result titles                 | null (default callback)        |
 | `buildUrl`              | Callable | A callback for building URLs to the file with results | null (default callback)        |
+| `buildSnippet           | Callable | A callback for building result snippets               | null (default callback)        |
 
 
-## URL generating callback functions
+## Callbacks
+The last parameters are a bit less self-explainatory than the rest. Using callbacks, you can overwrite the default data generation methods with more specific ones. The three callbacks and their default methods are described below.
 
-The last parameter is a bit less self-explainatory than the rest. Usually when searching, you'll want to provide a link to the page the result was found in. Using a database-powered CMS, that is a pretty standard task. If you are interested in using this library, though, you probably have your own, custom CMS and handle routing your way. That's fine! You can specify a callback for generating URLs, given the respective file as an `SPLFileInfo` object.  
+### build URL callback
+Usually when searching, you'll want to provide a link to the page the result was found in. Using a database-powered CMS, that is a pretty standard task. If you are interested in using this library, though, you probably have your own, custom CMS and handle routing your way. That's fine! You can specify a callback for generating URLs, given the respective file as an `SPLFileInfo` object.  
 That provides you with, for example, the files name, its absolute path, its extension, etc. The default callback coming with *Octopus* will assume your files symbolize pages, and `path` is the root directory of your public web server. So it builds URLs like this:  
 `/public/subfolder1/page1.php` becomes `http://hostname.tld/subfolder1/page1`.
 
 Now there is much room for improvement - say, adding the fragment identifier of the nearest heading (foo.org/page#fragment) would be nice. Or maybe flat file structure drivers, or result sorting, ... . Open a new issue if you'd like some of these implemented.
+
+### build title callback
+The result title has to be created from the file name, so the callback receives an `SPLFileInfo` object you can build your result titles from. The default callback trims off the file extension, replaces dashes with spaces and uppercases the words.  
+You could get fancier, though, and look up the titles in a separate meta file, for example.
+
+### build snippet callback
+The snippet leaves more room for creativity, as that's the only place in the library where you should generate markup. The callback receives the matched term, the text before and the text after said match as its parameters. The default callback turns it into `'[...] %s<span class="term">%s</span>%s [...]'`.
 
 ## A basic real-world results function
 The following is an example of how to actually use Octopus on a search site in your project. In case you're wondering why this method is not part of *Octopus* itself: At some point, you'll have to use html tags to present your search results.  
