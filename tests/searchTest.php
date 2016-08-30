@@ -75,5 +75,89 @@ class SearchTest extends PHPUnit_Framework_TestCase
 
     $this->assertEquals($expectedResults, $actualResults);
   }
+  
+  public function testSearchWithCustomTitleCreationCallback()
+  {
+    $mockContentPath = dirname(__FILE__) . '/fixtures/content';
+    $obj = new Radiergummi\Octopus\Search(
+      'Designer',
+      $mockContentPath
+    );
+    $obj->set('buildTitle', function($file) {
+      return 'foo';
+    });
+    
+    $expectedResults = array (
+      0 => 
+      array (
+        'url' => '/file2',
+        'title' => 'foo',
+        'snippet' => 
+        array (
+          0 => '[...]     Für <span class="term">Designer</span>, Schriftsetzer, Layouter, Grafikenthusiasten und [...]',
+        ),
+      ),
+    );
+
+    $actualResults = $obj->find();
+
+    $this->assertEquals($expectedResults, $actualResults);
+  }
+  
+  public function testSearchWithCustomURLCreationCallback()
+  {
+    $mockContentPath = dirname(__FILE__) . '/fixtures/content';
+    $obj = new Radiergummi\Octopus\Search(
+      'Designer',
+      $mockContentPath
+    );
+    $obj->set('buildUrl', function($file) {
+      return 'foo';
+    });
+    
+    $expectedResults = array (
+      0 => 
+      array (
+        'url' => 'foo',
+        'title' => 'File2',
+        'snippet' => 
+        array (
+          0 => '[...]     Für <span class="term">Designer</span>, Schriftsetzer, Layouter, Grafikenthusiasten und [...]',
+        ),
+      ),
+    );
+
+    $actualResults = $obj->find();
+
+    $this->assertEquals($expectedResults, $actualResults);
+  }
+  
+  public function testSearchWithCustomSnippetCreationCallback()
+  {
+    $mockContentPath = dirname(__FILE__) . '/fixtures/content';
+    $obj = new Radiergummi\Octopus\Search(
+      'Designer',
+      $mockContentPath
+    );
+    $obj->set('buildSnippet', function($match, $before, $after) {
+      return 'foo';
+    });
+    
+    $expectedResults = array (
+      0 => 
+      array (
+        'url' => '/file2',
+        'title' => 'File2',
+        'snippet' => 
+        array (
+          0 => 'foo',
+        ),
+      ),
+    );
+
+    $actualResults = $obj->find();
+
+    $this->assertEquals($expectedResults, $actualResults);
+  }
 }
 
