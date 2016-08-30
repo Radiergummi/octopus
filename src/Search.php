@@ -304,11 +304,11 @@ class Search
 						if (! empty($matches[$i][3])) {
 
 							// add a new snippet to the result
-							$result['snippet'][] = call_user_func_array(static::$buildSnippet, [
+							$result['snippet'][] = call_user_func_array(static::$buildSnippet, array(
 								$matches[$i][3],
 								$matches[$i][1],
 								$matches[$i][4]
-							]);
+							));
 						}
 					}
 				}
