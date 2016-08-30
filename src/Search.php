@@ -64,6 +64,30 @@ class Search
 	public static $buildUrl = null;
 
 	/**
+	 * buildSnippet
+	 * holds the callback for building result excerpts
+	 * 
+	 * (default value: null)
+	 * 
+	 * @var Callable
+	 * @access public
+	 * @static
+	 */
+	public static $buildSnippet = null;
+
+	/**
+	 * buildTitle
+	 * holds the callback for building result titles
+	 * 
+	 * (default value: null)
+	 * 
+	 * @var Callable
+	 * @access public
+	 * @static
+	 */
+	public static $buildTitle = null;
+
+	/**
 	 * excludes
 	 * 
 	 * (default value: array())
@@ -103,11 +127,13 @@ class Search
 	 * @example $results = new Search('foo')->set('path', '/content/sites')->find();
 	 * 
 	 * @access public
-	 * @param string $path (default: '/')			the path to search
-	 * @param mixed $excludes (default: [])			the files to exclude from searching
-	 * @param int $surroundingTextLength (default: 5)	the amount of words of surrounding text in snippets
-	 * @param int $resultsPerFile (default: 0)		the amount of result snippets to build for each file
-	 * @param Callable $buildUrl (default: null)		the callback for building URLs to results
+	 * @param string $path (default: '/')              the path to search
+	 * @param mixed $excludes (default: [])            the files to exclude from searching
+	 * @param int $surroundingTextLength (default: 5)  the amount of words of surrounding text in snippets
+	 * @param int $resultsPerFile (default: 0)         the amount of result snippets to build for each file
+	 * @param Callable $buildUrl (default: null)       the callback for building URLs to results
+	 * @param Callable $buildSnippet (default: null)   the callback for building result excerpts
+	 * @param Callable $buildTitle (default: null)     the callback for building result titles
 	 */
 	public function __construct(
 		$query,
@@ -115,7 +141,9 @@ class Search
 		$excludes = array('header.php', 'footer.php'),
 		$surroundingTextLength = 5,
 		$resultsPerFile = 0,
-		$buildUrl = null
+		$buildUrl = null,
+		$buildSnippet = null,
+		$buildTitle = null
 	) {
 		// the query for this search
 		$this->query = $query;
@@ -132,7 +160,7 @@ class Search
 		// the amount of results per file to be regarded
 		if (empty(static::$resultsPerFile)) static::$resultsPerFile = $resultsPerFile;
 		
-		// the callback for
+		// the callback for building the result links
 		if (empty($buildUrl)) {
 			static::$buildUrl = function($file) {
 				$path = Search::$path;
@@ -148,6 +176,46 @@ class Search
 		
 		else {
 			static::$buildUrl = $buildUrl;
+		}
+		
+		// the callback for building the snippet text
+		if (empty($buildSnippet)) {
+			static::$buildSnippet = function($match, $beforeMatch, $afterMatch) {
+				return vsprintf(
+						// the snippet string
+						'[...] %s<span class="term">%s</span>%s [...]',
+						
+						array(
+							// the text before the term
+							$beforeMatch,
+
+							// the term itself as matched in the text
+							$match,
+
+							// the text after the term
+							$afterMatch
+						)
+					);
+			};
+		}
+		
+		else {
+			static::$buildSnippet = $buildSnippet;
+		}
+		
+		
+		// the callback for building the result title
+		if (empty($buildTitle)) {
+			static::$buildTitle = function($file) {
+
+				// build title for resource by trimming of the file extension,
+				// replacing dashes with whitespace and uppercasing words.
+				return ucwords(str_replace('-', ' ', substr($file->getFilename(), 0, -strlen('.' . $file->getExtension()))));
+			};
+		}
+		
+		else {
+			static::$buildTitle = $buildTitle;
 		}
 	}
 	
@@ -207,12 +275,10 @@ class Search
 			if (stristr($content = strip_tags(nl2br(file_get_contents($file)), '<br><code><p>'), $this->query) !== false) {
 
 				// call the callback for URL generation
-				$result['url'] = call_user_func(static::$buildUrl, $file);
+				$result['url'] = static::$buildUrl($file);
 				
-				// build name for resource by trimming of the file extension,
-				// replacing dashes with whitespace and uppercasing words.
-				// NOTE: This should be done within a callback, too.
-				$result['title'] = ucwords(str_replace('-', ' ', substr($file->getFilename(), 0, -strlen('.' . $file->getExtension()))));
+				// call the callback for title generation
+				$result['title'] = static::$buildTitle($file);
 			
 				// generate snippet with search term
 				if (preg_match_all(
@@ -238,22 +304,7 @@ class Search
 						if (! empty($matches[$i][3])) {
 							
 							// add a new snippet to the result
-							$result['snippet'][] = vsprintf(
-								
-								// the snippet string
-								'[...] %s<span class="term">%s</span>%s [...]',
-								
-								array(
-									// the text before the term
-									$matches[$i][1],
-
-									// the term itself as matched in the text
-									$matches[$i][3],
-
-									// the text after the term
-									$matches[$i][4]
-								)
-							);
+							$result['snippet'][] = static::$buildSnippet($matches[$i][3], $matches[$i][1], $matches[$i][4]);
 						}
 					}
 				}
