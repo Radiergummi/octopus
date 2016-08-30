@@ -131,9 +131,9 @@ class Search
 	 * @param mixed $excludes (default: [])            the files to exclude from searching
 	 * @param int $surroundingTextLength (default: 5)  the amount of words of surrounding text in snippets
 	 * @param int $resultsPerFile (default: 0)         the amount of result snippets to build for each file
+	 * @param Callable $buildTitle (default: null)     the callback for building result titles
 	 * @param Callable $buildUrl (default: null)       the callback for building URLs to results
 	 * @param Callable $buildSnippet (default: null)   the callback for building result excerpts
-	 * @param Callable $buildTitle (default: null)     the callback for building result titles
 	 */
 	public function __construct(
 		$query,
@@ -141,9 +141,9 @@ class Search
 		$excludes = array('header.php', 'footer.php'),
 		$surroundingTextLength = 5,
 		$resultsPerFile = 0,
+		$buildTitle = null,
 		$buildUrl = null,
-		$buildSnippet = null,
-		$buildTitle = null
+		$buildSnippet = null
 	) {
 		// the query for this search
 		$this->query = $query;
