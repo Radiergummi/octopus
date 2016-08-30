@@ -275,22 +275,22 @@ class Search
 			if (stristr($content = strip_tags(nl2br(file_get_contents($file)), '<br><code><p>'), $this->query) !== false) {
 
 				// call the callback for URL generation
-				$result['url'] = static::$buildUrl($file);
-				
+				$result['url'] = call_user_func(static::$buildUrl, $file);
+
 				// call the callback for title generation
-				$result['title'] = static::$buildTitle($file);
-			
+				$result['title'] = call_user_func(static::$buildTitle, $file);
+
 				// generate snippet with search term
 				if (preg_match_all(
 					// this regex captures the words around the search term, if present.
 					'/((\s\S*){0,' . static::$surroundingTextLength . '})(' . $this->query . ')((\s?\S*){0,' . static::$surroundingTextLength . '})/im',
-					
+
 					// the prepared file content string
 					$content,
-					
+
 					// the return variable name
 					$matches,
-					
+
 					// return matches in associative array
 					PREG_SET_ORDER
 				)) {
@@ -299,12 +299,16 @@ class Search
 
 					// iterate over result snippets
 					for ($i = 0; $i < $resultLimit; $i++) {
-						
+
 						// if we have a match for the term in the file text
 						if (! empty($matches[$i][3])) {
-							
+
 							// add a new snippet to the result
-							$result['snippet'][] = static::$buildSnippet($matches[$i][3], $matches[$i][1], $matches[$i][4]);
+							$result['snippet'][] = call_user_func_array(static::$buildSnippet, [
+								$matches[$i][3],
+								$matches[$i][1],
+								$matches[$i][4]
+							]);
 						}
 					}
 				}
