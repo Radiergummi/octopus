@@ -1,9 +1,12 @@
 <?php
+
+use PHPUnit\Framework\TestCase;
+
 /**
  * Octopus Search Test
  *
  */
-class SearchTest extends PHPUnit_Framework_TestCase
+class SearchTest extends TestCase
 {
   public function testCreateObject()
   {
