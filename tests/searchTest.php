@@ -1,6 +1,9 @@
 <?php
 
+namespace Tests;
+
 use PHPUnit\Framework\TestCase;
+use Radiergummi\Octopus\Search;
 
 /**
  * Octopus Search Test
@@ -8,159 +11,158 @@ use PHPUnit\Framework\TestCase;
  */
 class SearchTest extends TestCase
 {
-  public function testCreateObject()
-  {
-    $obj = new Radiergummi\Octopus\Search('foo');
+    public function testCreateObject()
+    {
+        $obj = new Search('foo');
     
-    $this->assertInstanceOf('Radiergummi\Octopus\Search', $obj);
-  }
+        $this->assertInstanceOf('Radiergummi\Octopus\Search', $obj);
+    }
   
-  public function testSetConfigVar()
-  {
-    $obj = new Radiergummi\Octopus\Search('foo');
+    public function testSetConfigVar()
+    {
+        $obj = new Search('foo');
     
-    $mockContentPath = dirname(__FILE__) . '/fixtures/content';
+        $mockContentPath = dirname(__FILE__) . '/fixtures/content';
     
-    $obj->set('path', $mockContentPath);
+        $obj->set('path', $mockContentPath);
     
-    $this->assertEquals($mockContentPath, Radiergummi\Octopus\Search::$path);
-  }
+        $this->assertEquals($mockContentPath, Search::$path);
+    }
   
-  public function testSetMultipleConfigVars()
-  {
-    $obj = new Radiergummi\Octopus\Search('foo');
+    public function testSetMultipleConfigVars()
+    {
+        $obj = new Search('foo');
     
-    $mockContentPath = dirname(__FILE__) . '/fixtures/content';
-    $mockExcludes = array('header.php', 'footer.php', 'search.php');
+        $mockContentPath = dirname(__FILE__) . '/fixtures/content';
+        $mockExcludes = array('header.php', 'footer.php', 'search.php');
     
-    $obj->configure(array('path' => $mockContentPath, 'excludes' => $mockExcludes));
+        $obj->configure(array('path' => $mockContentPath, 'excludes' => $mockExcludes));
     
-    $this->assertEquals($mockContentPath, Radiergummi\Octopus\Search::$path);
-    $this->assertEquals($mockExcludes, Radiergummi\Octopus\Search::$excludes);
-  }
+        $this->assertEquals($mockContentPath, Search::$path);
+        $this->assertEquals($mockExcludes, Search::$excludes);
+    }
 
-  public function testConstructObjectWithConfigVars()
-  {
-    $mockContentPath = dirname(__FILE__) . '/fixtures/content';
-    $mockExcludes = array('header.php', 'footer.php', 'search.php');
+    public function testConstructObjectWithConfigVars()
+    {
+        $mockContentPath = dirname(__FILE__) . '/fixtures/content';
+        $mockExcludes = array('header.php', 'footer.php', 'search.php');
 
-    $obj = new Radiergummi\Octopus\Search(
-      'foo',
-      $mockContentPath,
-      $mockExcludes
-    );
+        $obj = new Search(
+            'foo',
+            $mockContentPath,
+            $mockExcludes
+        );
 
-    $this->assertEquals($mockContentPath, Radiergummi\Octopus\Search::$path);
-    $this->assertEquals($mockExcludes, Radiergummi\Octopus\Search::$excludes);
-  }
+        $this->assertEquals($mockContentPath, Search::$path);
+        $this->assertEquals($mockExcludes, Search::$excludes);
+    }
 
-  public function testSearchConcluded()
-  {
-    $mockContentPath = dirname(__FILE__) . '/fixtures/content';
-    $obj = new Radiergummi\Octopus\Search(
-      'Designer',
-      $mockContentPath
-    );
+    public function testSearchConcluded()
+    {
+        $mockContentPath = dirname(__FILE__) . '/fixtures/content';
+        $obj = new Search(
+            'Designer',
+            $mockContentPath
+        );
     
-    $expectedResults = array (
-      0 => 
-      array (
+        $expectedResults = array (
+        0 =>
+        array (
         'url' => '/file2',
         'title' => 'File2',
-        'snippet' => 
+        'snippet' =>
         array (
           0 => '[...]     Für <span class="term">Designer</span>, Schriftsetzer, Layouter, Grafikenthusiasten und [...]',
         ),
-      ),
-    );
+        ),
+        );
 
-    $actualResults = $obj->find();
+        $actualResults = $obj->find();
 
-    $this->assertEquals($expectedResults, $actualResults);
-  }
+        $this->assertEquals($expectedResults, $actualResults);
+    }
   
-  public function testSearchWithCustomTitleCreationCallback()
-  {
-    $mockContentPath = dirname(__FILE__) . '/fixtures/content';
-    $obj = new Radiergummi\Octopus\Search(
-      'Designer',
-      $mockContentPath
-    );
-    $obj->set('buildTitle', function($file) {
-      return 'foo';
-    });
+    public function testSearchWithCustomTitleCreationCallback()
+    {
+        $mockContentPath = dirname(__FILE__) . '/fixtures/content';
+        $obj = new Search(
+            'Designer',
+            $mockContentPath
+        );
+        $obj->set('buildTitle', function ($file) {
+            return 'foo';
+        });
     
-    $expectedResults = array (
-      0 => 
-      array (
+        $expectedResults = array (
+        0 =>
+        array (
         'url' => '/file2',
         'title' => 'foo',
-        'snippet' => 
+        'snippet' =>
         array (
           0 => '[...]     Für <span class="term">Designer</span>, Schriftsetzer, Layouter, Grafikenthusiasten und [...]',
         ),
-      ),
-    );
+        ),
+        );
 
-    $actualResults = $obj->find();
+        $actualResults = $obj->find();
 
-    $this->assertEquals($expectedResults, $actualResults);
-  }
+        $this->assertEquals($expectedResults, $actualResults);
+    }
   
-  public function testSearchWithCustomURLCreationCallback()
-  {
-    $mockContentPath = dirname(__FILE__) . '/fixtures/content';
-    $obj = new Radiergummi\Octopus\Search(
-      'Designer',
-      $mockContentPath
-    );
-    $obj->set('buildUrl', function($file) {
-      return 'foo';
-    });
+    public function testSearchWithCustomURLCreationCallback()
+    {
+        $mockContentPath = dirname(__FILE__) . '/fixtures/content';
+        $obj = new Search(
+            'Designer',
+            $mockContentPath
+        );
+        $obj->set('buildUrl', function ($file) {
+            return 'foo';
+        });
     
-    $expectedResults = array (
-      0 => 
-      array (
+        $expectedResults = array (
+        0 =>
+        array (
         'url' => 'foo',
         'title' => 'File2',
-        'snippet' => 
+        'snippet' =>
         array (
           0 => '[...]     Für <span class="term">Designer</span>, Schriftsetzer, Layouter, Grafikenthusiasten und [...]',
         ),
-      ),
-    );
+        ),
+        );
 
-    $actualResults = $obj->find();
+        $actualResults = $obj->find();
 
-    $this->assertEquals($expectedResults, $actualResults);
-  }
+        $this->assertEquals($expectedResults, $actualResults);
+    }
   
-  public function testSearchWithCustomSnippetCreationCallback()
-  {
-    $mockContentPath = dirname(__FILE__) . '/fixtures/content';
-    $obj = new Radiergummi\Octopus\Search(
-      'Designer',
-      $mockContentPath
-    );
-    $obj->set('buildSnippet', function($match, $before, $after) {
-      return 'foo';
-    });
+    public function testSearchWithCustomSnippetCreationCallback()
+    {
+        $mockContentPath = dirname(__FILE__) . '/fixtures/content';
+        $obj = new Search(
+            'Designer',
+            $mockContentPath
+        );
+        $obj->set('buildSnippet', function ($match, $before, $after) {
+            return 'foo';
+        });
     
-    $expectedResults = array (
-      0 => 
-      array (
+        $expectedResults = array (
+        0 =>
+        array (
         'url' => '/file2',
         'title' => 'File2',
-        'snippet' => 
+        'snippet' =>
         array (
           0 => 'foo',
         ),
-      ),
-    );
+        ),
+        );
 
-    $actualResults = $obj->find();
+        $actualResults = $obj->find();
 
-    $this->assertEquals($expectedResults, $actualResults);
-  }
+        $this->assertEquals($expectedResults, $actualResults);
+    }
 }
-
