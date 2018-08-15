@@ -1,4 +1,5 @@
 <?php
+
 namespace Radiergummi\Octopus;
 
 use \RecursiveDirectoryIterator;
